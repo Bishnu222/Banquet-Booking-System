@@ -1,20 +1,35 @@
 import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import WhyChooseUs from './components/WhyChooseUs'
 import Venues from './components/Venues'
 import Footer from './components/Footer'
+import SignIn from './components/SignIn'
 import './App.css'
 
-function App() {
+function Home() {
   return (
-    <div className="App">
+    <>
       <Header />
       <Hero />
       <WhyChooseUs />
       <Venues />
       <Footer />
-    </div>
+    </>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<SignIn />} />
+        </Routes>
+      </div>
+    </Router>
   )
 }
 
