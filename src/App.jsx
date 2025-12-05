@@ -6,6 +6,7 @@ import WhyChooseUs from './components/WhyChooseUs'
 import Venues from './components/Venues'
 import Footer from './components/Footer'
 import SignIn from './components/SignIn'
+import SignUp from './components/SignUp'
 import './App.css'
 
 function Home() {
@@ -27,6 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
       </div>
     </Router>
