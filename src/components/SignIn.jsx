@@ -1,25 +1,26 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import './SignIn.css'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import './SignIn.css';
 
-const SignIn = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [rememberMe, setRememberMe] = useState(false)
+function SignIn() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle sign in logic here
-    console.log('Sign in:', { email, password, rememberMe })
-  }
+    e.preventDefault();
+    // Handle login logic here
+    console.log("Login attempt:", { email, password, rememberMe });
+  };
 
   return (
     <div className="signin-container">
       <div className="signin-left">
         <div className="signin-overlay">
           <div className="signin-left-content">
-            <h1 className="signin-brand-title">Banquet Booking System</h1>
-            <p className="signin-brand-tagline">Manage your events with elegance and ease</p>
+            <h1 className="signin-brand-title">Banquet Booking</h1>
+            <p className="signin-brand-tagline">Your Perfect Event Starts Here</p>
           </div>
         </div>
       </div>
@@ -27,31 +28,29 @@ const SignIn = () => {
         <div className="signin-form-container">
           <div className="signin-header">
             <h2 className="signin-welcome">Welcome Back</h2>
-            <p className="signin-subtitle">Sign in to manage your banquet bookings</p>
+            <p className="signin-subtitle">Sign in to continue to your account</p>
           </div>
           <div className="signin-card">
             <h3 className="signin-form-title">Sign In</h3>
             <p className="signin-form-subtitle">Enter your credentials to access your account</p>
-            <form onSubmit={handleSubmit} className="signin-form">
+            <form className="signin-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="email">Email Address</label>
                 <input
-                  type="email"
                   id="email"
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
                   required
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <input
-                  type="password"
                   id="password"
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
                   required
                 />
               </div>
@@ -65,19 +64,23 @@ const SignIn = () => {
                   />
                   <label htmlFor="remember">Remember me</label>
                 </div>
-                <a href="#forgot" className="forgot-password">Forgot Password?</a>
+                <a href="#" className="forgot-password">Forgot password?</a>
               </div>
-              <button type="submit" className="signin-button">Sign In</button>
+              <button type="submit" className="signin-button">
+                Sign In
+              </button>
             </form>
             <div className="signin-footer">
-              <p>Don't have an account? <Link to="/signup" className="signup-link">Sign up</Link></p>
+              Don't have an account?{" "}
+              <a href="#" className="signup-link" onClick={(e) => { e.preventDefault(); navigate('/signup'); }}>
+                Sign up
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default SignIn
-
+export default SignIn;

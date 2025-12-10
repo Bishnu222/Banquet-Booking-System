@@ -1,23 +1,19 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Header from './components/Header'
-import Hero from './components/Hero'
-import WhyChooseUs from './components/WhyChooseUs'
-import Venues from './components/Venues'
-import Footer from './components/Footer'
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'
+import { LandingPage } from './components/LandingPage'
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
 import './App.css'
 
 function Home() {
+  const navigate = useNavigate()
+  
   return (
-    <>
-      <Header />
-      <Hero />
-      <WhyChooseUs />
-      <Venues />
-      <Footer />
-    </>
+    <LandingPage
+      onNavigateToLogin={() => navigate('/signin')}
+      onNavigateToSignUp={() => navigate('/signup')}
+      onNavigateToVenues={() => navigate('/venues')}
+    />
   )
 }
 

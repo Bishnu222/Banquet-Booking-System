@@ -1,122 +1,122 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import './SignUp.css'
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import './SignUp.css';
 
-const SignUp = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    agreeToTerms: false
-  })
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }))
-  }
+function SignUp() {
+  const navigate = useNavigate();
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle sign up logic here
-    console.log('Sign up:', formData)
-  }
+    e.preventDefault();
+    // Handle sign-up logic here
+    console.log("Sign up attempt:", { fullName, email, phone, password, confirmPassword, agreeToTerms });
+  };
 
   return (
     <div className="signup-container">
       <div className="signup-left">
         <div className="signup-overlay">
           <div className="signup-left-content">
-            <h1 className="signup-brand-title">Banquet Booking System</h1>
-            <p className="signup-brand-tagline">Manage your events with elegance and ease</p>
+            <h1 className="signup-brand-title">Banquet Booking</h1>
+            <p className="signup-brand-tagline">Your Perfect Event Starts Here</p>
           </div>
         </div>
       </div>
       <div className="signup-right">
         <div className="signup-form-container">
           <div className="signup-header">
-            <h2 className="signup-welcome">Get Started</h2>
-            <p className="signup-subtitle">Create your account to begin booking</p>
+            <h2 className="signup-welcome">Create Account</h2>
+            <p className="signup-subtitle">Sign up to start managing your banquet bookings</p>
           </div>
           <div className="signup-card">
-            <h3 className="signup-form-title">Create Account</h3>
-            <p className="signup-form-subtitle">Sign up to start managing your banquet bookings</p>
-            <form onSubmit={handleSubmit} className="signup-form">
+            <h3 className="signup-form-title">Sign Up</h3>
+            <p className="signup-form-subtitle">Fill in your details to create an account</p>
+            <form className="signup-form" onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="username">User Name</label>
+                <label htmlFor="fullName">Full Name</label>
                 <input
+                  id="fullName"
                   type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  placeholder="Enter your username"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   required
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email Address</label>
                 <input
-                  type="email"
                   id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="phone">Phone Number</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   required
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <input
-                  type="password"
                   id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="confirmPassword">Confirm Password</label>
                 <input
-                  type="password"
                   id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="Confirm your password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
               </div>
               <div className="checkbox-group">
                 <input
                   type="checkbox"
-                  id="agreeToTerms"
-                  name="agreeToTerms"
-                  checked={formData.agreeToTerms}
-                  onChange={handleChange}
+                  id="terms"
+                  checked={agreeToTerms}
+                  onChange={(e) => setAgreeToTerms(e.target.checked)}
                   required
                 />
-                <label htmlFor="agreeToTerms">
-                  I agree to the Terms of Service and Privacy Policy
+                <label htmlFor="terms">
+                  I agree to the{" "}
+                  <a href="#" className="signin-link">Terms of Service</a>{" "}
+                  and{" "}
+                  <a href="#" className="signin-link">Privacy Policy</a>
                 </label>
               </div>
-              <button type="submit" className="signup-button">Create Account</button>
+              <button type="submit" className="signup-button">
+                Create Account
+              </button>
             </form>
             <div className="signup-footer">
-              <p>Already have an account? <Link to="/signin" className="signin-link">Sign in</Link></p>
+              Already have an account?{" "}
+              <a href="#" className="signin-link" onClick={(e) => { e.preventDefault(); navigate('/signin'); }}>
+                Sign in
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default SignUp
-
+export default SignUp;
