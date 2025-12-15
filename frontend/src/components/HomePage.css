@@ -1,0 +1,220 @@
+/* HomePage.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --text-main: #1f2937;
+    --text-light: #6b7280;
+    --bg-main: #f9fafb;
+    --white: #ffffff;
+    --accent-blue: #e0f2fe;
+    --accent-blue-text: #0284c7;
+    --accent-purple: #f3e8ff;
+    --accent-purple-text: #9333ea;
+    --accent-green: #dcfce7;
+    --accent-green-text: #16a34a;
+}
+
+.home-container {
+    min-height: 100vh;
+    background-color: var(--white);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+    padding: 0 0 2rem 0;
+}
+
+/* --- Navigation --- */
+.home-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3rem;
+    background: #e5e7eb;
+    /* Light grey background like screenshot */
+    border-bottom: 1px solid #d1d5db;
+}
+
+.nav-brand img {
+    height: 40px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 3rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.nav-right {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #4b5563;
+}
+
+/* --- Main Content --- */
+.dashboard-content {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+}
+
+.welcome-section h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #111827;
+}
+
+.welcome-section p {
+    color: #6b7280;
+    margin-bottom: 3rem;
+}
+
+/* --- Action Cards --- */
+.action-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.action-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 2rem;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+    background: white;
+}
+
+.action-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.icon-blue {
+    background: var(--accent-blue);
+    color: var(--accent-blue-text);
+}
+
+.icon-purple {
+    background: var(--accent-purple);
+    color: var(--accent-purple-text);
+}
+
+.icon-green {
+    background: var(--accent-green);
+    color: var(--accent-green-text);
+}
+
+.action-card h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.action-card p {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+/* --- Feature Venues --- */
+.featured-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    display: block;
+    color: #6b7280;
+    margin-bottom: 2rem;
+}
+
+.venues-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2rem;
+}
+
+.venue-card-simple {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    /* Slightly sharper styling like screenshot */
+    overflow: hidden;
+    background: white;
+}
+
+.venue-image-wrapper {
+    height: 180px;
+    width: 100%;
+}
+
+.venue-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.venue-info-simple {
+    padding: 1rem;
+}
+
+.venue-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.venue-location {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-details {
+    width: 100%;
+    background: white;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.btn-details:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}

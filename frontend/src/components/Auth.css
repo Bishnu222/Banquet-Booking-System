@@ -1,0 +1,287 @@
+/* Auth.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #000000;
+    /* Black */
+    --primary-hover: #333333;
+    /* Dark Gray */
+    --link-color: #3b82f6;
+    /* Blue 500 */
+    --text-primary: #111827;
+    /* Gray 900 */
+    --text-secondary: #6b7280;
+    /* Gray 500 */
+    --bg-input: #f3f4f6;
+    /* Gray 100 */
+    --white: #ffffff;
+    --input-border: #e5e7eb;
+    /* Gray 200 */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --radius: 8px;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Shared Containers */
+.signin-container,
+.signup-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.signin-left,
+.signup-left {
+    display: block;
+    width: 60%;
+    flex: 1;
+    background-image: url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.signin-overlay,
+.signup-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    /* Dark overlay to make text pop */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--white);
+    padding: 4rem;
+    text-align: center;
+}
+
+.signin-brand-title,
+.signup-brand-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--white);
+}
+
+.signin-brand-tagline,
+.signup-brand-tagline {
+    font-size: 1.1rem;
+    font-weight: 300;
+    opacity: 0.9;
+}
+
+.signin-right,
+.signup-right {
+    width: 40%;
+    min-width: 450px;
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3rem;
+}
+
+/* Header Section above card */
+.signin-header,
+.signup-header {
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.signin-welcome,
+.signup-welcome {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.signin-subtitle,
+.signup-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Card / Form styles */
+.signin-card,
+.signup-card {
+    width: 100%;
+    border: 1px solid var(--input-border);
+    padding: 2rem;
+    border-radius: var(--radius);
+}
+
+.signin-form-title,
+.signup-form-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.signin-form-subtitle,
+.signup-form-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.signin-form,
+.signup-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background-color: var(--bg-input);
+    transition: all 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    background-color: var(--white);
+    border-color: #9ca3af;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Checkbox */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--primary-color);
+    border-radius: 4px;
+}
+
+.checkbox-group label {
+    color: var(--text-secondary);
+}
+
+.forgot-password,
+.signin-link,
+.signup-link {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.forgot-password:hover,
+.signin-link:hover,
+.signup-link:hover {
+    text-decoration: underline;
+}
+
+/* Button */
+.signin-button,
+.signup-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 1rem;
+}
+
+.signin-button:hover,
+.signup-button:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Footer (Already have account?) */
+.signin-footer,
+.signup-footer {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Tabs */
+.auth-tabs {
+    display: flex;
+    background: #f3f4f6;
+    padding: 4px;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    width: fit-content;
+}
+
+.auth-tab {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.auth-tab.active {
+    background: var(--white);
+    color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+    font-weight: 600;
+}
+
+/* Owner Mode Background */
+.owner-mode .signin-left {
+    background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+
+    .signin-right,
+    .signup-right {
+        padding: 1.5rem;
+    }
+
+    .signin-card,
+    .signup-card {
+        border: none;
+        padding: 0;
+    }
+}

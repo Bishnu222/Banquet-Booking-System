@@ -1,0 +1,217 @@
+/* OwnerAuth.css */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap');
+
+:root {
+    --owner-primary: #1a237e;
+    /* Deep Navy Blue */
+    --owner-accent: #ffd700;
+    /* Gold */
+    --owner-accent-hover: #ffca28;
+    /* Amber */
+    --owner-text-main: #1f2937;
+    --owner-text-light: #6b7280;
+    --owner-bg: #f8fafc;
+    --owner-white: #ffffff;
+}
+
+.owner-auth-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--owner-bg);
+    font-family: 'Lato', sans-serif;
+}
+
+/* BRAND SIDE (Left or Right - we'll put it on Right for distinction) */
+.owner-auth-brand-side {
+    width: 45%;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--owner-white);
+    padding: 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.owner-auth-brand-side::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.2;
+    /* Subtle texture */
+    z-index: 0;
+}
+
+.owner-auth-brand-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.owner-auth-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--owner-accent);
+}
+
+.owner-auth-tagline {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* FORM SIDE */
+.owner-auth-form-side {
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    background-color: var(--owner-white);
+}
+
+.owner-auth-card {
+    width: 100%;
+    max-width: 480px;
+}
+
+.owner-auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.owner-auth-welcome {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.25rem;
+    color: var(--owner-primary);
+    margin-bottom: 0.5rem;
+}
+
+.owner-auth-subtitle {
+    color: var(--owner-text-light);
+    font-size: 1rem;
+}
+
+/* FORM ELEMENTS */
+.owner-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.owner-form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--owner-text-light);
+    margin-bottom: 0.5rem;
+}
+
+.owner-form-group input {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
+}
+
+.owner-form-group input:focus {
+    outline: none;
+    border-color: var(--owner-primary);
+    background-color: var(--owner-white);
+    box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+}
+
+.owner-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--owner-primary);
+    color: var(--owner-white);
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+}
+
+.owner-btn:hover {
+    background-color: #151b60;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.owner-footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--owner-text-light);
+}
+
+.owner-link {
+    color: var(--owner-primary);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 0.25rem;
+}
+
+.owner-link:hover {
+    color: #151b60;
+    text-decoration: underline;
+}
+
+/* OPTIONS LINE */
+.owner-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.owner-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.owner-checkbox input {
+    accent-color: var(--owner-primary);
+    width: 1rem;
+    height: 1rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .owner-auth-container {
+        flex-direction: column-reverse;
+    }
+
+    .owner-auth-brand-side,
+    .owner-auth-form-side {
+        width: 100%;
+    }
+
+    .owner-auth-brand-side {
+        padding: 3rem 1.5rem;
+    }
+}
