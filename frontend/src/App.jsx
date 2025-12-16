@@ -25,6 +25,11 @@ import { HomePage } from './components/HomePage'
 import OwnerDashboard from './components/OwnerDashboard'
 import AdminDashboard from './components/AdminDashboard'
 
+import ProfilePage from './components/ProfilePage'
+import VenueDetail from './components/VenueDetail'
+import MyBookings from './components/MyBookings'
+import BookingPage from './components/BookingPage'
+
 function App() {
   return (
     <Router>
@@ -37,9 +42,14 @@ function App() {
           <Route path="/owner-login" element={<OwnerLogin />} />
           <Route path="/owner-signup" element={<OwnerSignup />} />
           <Route path="/venues" element={<VenuesPageWrapper />} />
+          <Route path="/venues/:id" element={<VenueDetail />} />
           {/* Protected Routes (Ideally wrapped in a ProtectedRoute component, using direct verify here for simplicity) */}
           <Route path="/owner-dashboard" element={<OwnerDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/bookings" element={<MyBookings />} />
+          <Route path="/book/:venueId" element={<BookingPage />} />
         </Routes>
       </div>
     </Router>
@@ -50,7 +60,14 @@ function VenuesPageWrapper() {
   const navigate = useNavigate();
   return (
     <VenuesPage
-      onNavigateBack={() => navigate('/')}
+      onNavigateBack={() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          navigate('/home');
+        } else {
+          navigate('/');
+        }
+      }}
     />
   );
 }

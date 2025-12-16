@@ -27,6 +27,7 @@ function SignUp() {
       });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('role', res.data.user.role); // Store role
+      localStorage.setItem('userName', res.data.user.name);
 
       // Redirect based on role
       if (res.data.user.role === 'admin') navigate('/admin-dashboard');

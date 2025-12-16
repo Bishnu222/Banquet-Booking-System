@@ -10,8 +10,8 @@ export function HomePage() {
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Hardcoded for 'Users' as per screenshot
-  const userName = "Users";
+  // Get user name from localStorage
+  const userName = localStorage.getItem('userName') || "User";
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -27,10 +27,25 @@ export function HomePage() {
     fetchVenues();
   }, []);
 
+  // Dropdown state
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.profile-btn') && !event.target.closest('.dropdown-menu')) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       localStorage.removeItem('token');
       localStorage.removeItem('role');
+      localStorage.removeItem('userName');
       navigate('/');
     }
   };
@@ -54,12 +69,45 @@ export function HomePage() {
         <div className="nav-links">
           <span className="nav-link" onClick={() => navigate('/home')}>Dashboard</span>
           <span className="nav-link" onClick={() => navigate('/venues')}>Venues</span>
-          <span className="nav-link">My Bookings</span>
+          <span className="nav-link" onClick={() => navigate('/bookings')}>My Bookings</span>
         </div>
 
         <div className="nav-right">
-          <button className="icon-btn">🔔</button>
-          <button className="icon-btn" onClick={handleLogout}>👤</button>
+          <button className="icon-btn" title="Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+          </button>
+
+          <div className="profile-container-nav" style={{ position: 'relative' }}>
+            <button
+              className="icon-btn profile-btn"
+              onClick={() => setShowDropdown(!showDropdown)}
+              title="Settings"
+            >
+              <div className="avatar-circle" style={{ cursor: 'pointer' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </div>
+            </button>
+
+            {showDropdown && (
+              <div className="dropdown-menu">
+                <div className="dropdown-header-item">
+                  <strong>{userName}</strong>
+                </div>
+                <div className="dropdown-item" onClick={() => navigate('/profile')}>
+                  Profile Settings
+                </div>
+                <div className="dropdown-item logout" onClick={handleLogout}>
+                  Logout
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -82,7 +130,7 @@ export function HomePage() {
           </div>
 
           {/* Card 2 */}
-          <div className="action-card">
+          <div className="action-card" onClick={() => navigate('/bookings')}>
             <div className="card-icon icon-purple">
               <span>📅</span>
             </div>
@@ -120,7 +168,7 @@ export function HomePage() {
                   <div className="venue-location">
                     <span>📍</span> {venue.location}
                   </div>
-                  <button className="btn-details" onClick={() => navigate('/venues')}>
+                  <button className="btn-details" onClick={() => navigate(`/venues/${venue._id}`)}>
                     View Details
                   </button>
                 </div>

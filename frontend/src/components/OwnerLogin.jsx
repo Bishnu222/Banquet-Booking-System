@@ -25,6 +25,7 @@ function OwnerLogin() {
 
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('role', userRole);
+            localStorage.setItem('userName', res.data.user.name);
 
             if (userRole === 'admin') navigate('/admin-dashboard');
             else navigate('/owner-dashboard');

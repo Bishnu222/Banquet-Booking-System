@@ -108,6 +108,7 @@ export function VenuesPage({ onNavigateBack }) {
                   </svg>
                   <span>{venue.location}</span>
                 </div>
+
                 <p className="venue-desc">{venue.description}</p>
 
                 <div className="venue-stats-row">
@@ -137,7 +138,7 @@ export function VenuesPage({ onNavigateBack }) {
                   <button className="btn-book" onClick={() => handleBookVenue(venue._id)}>
                     Book Now
                   </button>
-                  <button className="btn-details">
+                  <button className="btn-details" onClick={() => navigate(`/venues/${venue._id}`)}>
                     View Details
                   </button>
                 </div>

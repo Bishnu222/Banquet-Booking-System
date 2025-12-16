@@ -19,6 +19,7 @@ function SignIn() {
       });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('role', res.data.user.role);
+      localStorage.setItem('userName', res.data.user.name);
 
       // Basic check: if trying to login as owner but role is 'user', warn them (optional, but good UX)
       // For now, we just redirect based on actual role

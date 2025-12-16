@@ -6,6 +6,7 @@ import './OwnerDashboard.css';
 function OwnerDashboard() {
     const navigate = useNavigate();
     const [venues, setVenues] = useState([]);
+    const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'venues', 'bookings'
     const [showAddModal, setShowAddModal] = useState(false);
@@ -34,6 +35,21 @@ function OwnerDashboard() {
             setLoading(false);
         }
     };
+
+    const fetchBookings = async () => {
+        try {
+            const res = await api.get('/bookings/owner');
+            setBookings(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        if (activeTab === 'bookings') {
+            fetchBookings();
+        }
+    }, [activeTab]);
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -98,6 +114,17 @@ function OwnerDashboard() {
         }
     };
 
+    const handleBookingAction = async (id, status) => {
+        try {
+            const res = await api.patch(`/bookings/${id}/status`, { status });
+            // Update local state
+            setBookings(bookings.map(b => b._id === id ? res.data : b));
+        } catch (err) {
+            console.error(err);
+            alert("Failed to update booking status");
+        }
+    };
+
     // Calculated Stats
     const totalVenues = venues.length;
     const totalCapacity = venues.reduce((acc, v) => acc + (parseInt(v.capacity) || 0), 0);
@@ -142,9 +169,9 @@ function OwnerDashboard() {
                     </div>
                     <div
                         className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('settings')}
+                        onClick={() => navigate('/profile')}
                     >
-                        Settings
+                        Profile
                     </div>
                 </nav>
                 <div className="sidebar-footer">
@@ -229,78 +256,106 @@ function OwnerDashboard() {
                     </div>
                 )}
 
-                {/* Bookings Tab Placeholder */}
+                {/* Bookings Tab Content */}
                 {activeTab === 'bookings' && (
-                    <div className="message-box">
-                        <h3>Booking Management System</h3>
-                        <p>This feature will allow you to accept/reject booking requests.</p>
+                    <div className="bookings-section">
+                        <h2>Booking Requests</h2>
+                        <div className="bookings-list">
+                            {bookings.length === 0 ? (
+                                <p className="no-data">No booking requests yet.</p>
+                            ) : (
+                                bookings.map(booking => (
+                                    <div key={booking._id} className="booking-req-card">
+                                        <div className="req-header">
+                                            <span className={`status-badge ${booking.status}`}>{booking.status}</span>
+                                            <span className="req-date">{new Date(booking.createdAt).toLocaleDateString()}</span>
+                                        </div>
+                                        <div className="req-body">
+                                            <h3>{booking.venue?.name || 'Unknown Venue'}</h3>
+                                            <p><strong>Customer:</strong> {booking.user?.name} ({booking.user?.email})</p>
+                                            <p><strong>Event Date:</strong> {booking.date ? new Date(booking.date).toLocaleDateString() : 'N/A'}</p>
+                                            <p><strong>Guests:</strong> {booking.guestCount || 'N/A'}</p>
+                                        </div>
+                                        {booking.status === 'pending' && (
+                                            <div className="req-actions">
+                                                <button className="btn-small success" onClick={() => handleBookingAction(booking._id, 'confirmed')}>Confirm</button>
+                                                <button className="btn-small danger" onClick={() => handleBookingAction(booking._id, 'cancelled')}>Cancel</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
                 )}
 
                 {/* Settings Tab Placeholder */}
-                {activeTab === 'settings' && (
-                    <div className="message-box">
-                        <h3>Profile Settings</h3>
-                        <p>Manage your business profile and notification preferences.</p>
-                    </div>
-                )}
-
-            </main>
+                {
+                    activeTab === 'settings' && (
+                        <div className="message-box">
+                            <h3>Profile Settings</h3>
+                            <p>Manage your business profile and notification preferences.</p>
+                        </div>
+                    )
+                }
+            </main >
 
             {/* Add Venue Modal */}
-            {showAddModal && (
-                <div className="modal-overlay">
-                    <div className="modal">
-                        <h2>Add New Venue</h2>
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-grid">
-                                <div className="form-group">
-                                    <label>Venue Name</label>
-                                    <input name="name" value={formData.name} onChange={handleInputChange} required placeholder="e.g. Grand Ballroom" />
+            {
+                showAddModal && (
+                    <div className="modal-overlay">
+                        <div className="modal">
+                            <h2>Add New Venue</h2>
+                            <form onSubmit={handleSubmit}>
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label>Venue Name</label>
+                                        <input name="name" value={formData.name} onChange={handleInputChange} required placeholder="e.g. Grand Ballroom" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Location</label>
+                                        <input name="location" value={formData.location} onChange={handleInputChange} required placeholder="City, Area" />
+                                    </div>
                                 </div>
-                                <div className="form-group">
-                                    <label>Location</label>
-                                    <input name="location" value={formData.location} onChange={handleInputChange} required placeholder="City, Area" />
+
+                                <div className="form-grid">
+                                    <div className="form-group">
+                                        <label>Capacity (Guests)</label>
+                                        <input name="capacity" type="number" value={formData.capacity} onChange={handleInputChange} required placeholder="e.g. 500" />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Price Range</label>
+                                        <input name="priceRange" value={formData.priceRange} onChange={handleInputChange} required placeholder="e.g. $1000 - $5000" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="form-grid">
                                 <div className="form-group">
-                                    <label>Capacity (Guests)</label>
-                                    <input name="capacity" type="number" value={formData.capacity} onChange={handleInputChange} required placeholder="e.g. 500" />
+                                    <label>Description</label>
+                                    <textarea name="description" value={formData.description} onChange={handleInputChange} required rows="4" placeholder="Describe your venue..." />
                                 </div>
+
                                 <div className="form-group">
-                                    <label>Price Range</label>
-                                    <input name="priceRange" value={formData.priceRange} onChange={handleInputChange} required placeholder="e.g. $1000 - $5000" />
+                                    <label>Venue Images</label>
+                                    <input
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        style={{ padding: '0.5rem' }}
+                                    />
+                                    <small style={{ display: 'block', color: '#666', marginTop: '5px' }}>Select up to 5 images</small>
                                 </div>
-                            </div>
 
-                            <div className="form-group">
-                                <label>Description</label>
-                                <textarea name="description" value={formData.description} onChange={handleInputChange} required rows="4" placeholder="Describe your venue..." />
-                            </div>
-
-                            <div className="form-group">
-                                <label>Venue Images</label>
-                                <input
-                                    type="file"
-                                    multiple
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    style={{ padding: '0.5rem' }}
-                                />
-                                <small style={{ display: 'block', color: '#666', marginTop: '5px' }}>Select up to 5 images</small>
-                            </div>
-
-                            <div className="modal-actions">
-                                <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
-                                <button type="submit" className="btn-primary">Publish Venue</button>
-                            </div>
-                        </form>
+                                <div className="modal-actions">
+                                    <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
+                                    <button type="submit" className="btn-primary">Publish Venue</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }
 

@@ -128,26 +128,36 @@ export function LandingPage({ onNavigateToLogin, onNavigateToSignUp, onNavigateT
       </section>
 
       {/* Footer */}
+      {/* Footer */}
       <footer className="landing-footer">
         <div className="section-container">
           <div className="footer-grid">
-            <div className="footer-column">
+            <div className="footer-column brand-column">
               <h4 className="footer-title">Banquet Booking</h4>
               <p className="footer-text">
                 Your trusted partner for memorable events and celebrations
               </p>
             </div>
+
             <div className="footer-column">
-              <h5 className="footer-heading">Services</h5>
+              <h5 className="footer-heading">Service</h5>
               <ul className="footer-links">
                 <li><a href="#">Wedding Venues</a></li>
               </ul>
             </div>
+
             <div className="footer-column">
               <h5 className="footer-heading">Company</h5>
               <ul className="footer-links">
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+
+            <div className="footer-column">
+              <h5 className="footer-heading">Legal</h5>
+              <ul className="footer-links">
+                <li><a href="#">Terms of Service</a></li>
               </ul>
             </div>
           </div>
@@ -156,3 +166,4 @@ export function LandingPage({ onNavigateToLogin, onNavigateToSignUp, onNavigateT
     </div>
   );
 }
+
