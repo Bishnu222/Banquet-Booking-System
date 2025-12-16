@@ -21,8 +21,15 @@ const upload = multer({ storage });
 // Get All Venues
 router.get('/', async (req, res) => {
     try {
-        const venues = await Venue.find();
-        res.json(venues);
+        // Populate owner to check role
+        const venues = await Venue.find().populate('owner');
+
+        // Filter: Only show venues created by 'owner' role (exclude 'admin')
+        const ownerVenues = venues.filter(venue =>
+            venue.owner && venue.owner.role === 'owner'
+        );
+
+        res.json(ownerVenues);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
