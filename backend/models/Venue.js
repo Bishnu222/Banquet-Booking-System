@@ -8,6 +8,7 @@ const VenueSchema = new mongoose.Schema({
     images: { type: [String], required: true },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     description: { type: String, required: true },
+    pricePerGuest: { type: Number, default: 1200 },
     eventTypes: { type: [String], default: [] },
     createdAt: { type: Date, default: Date.now }
 });

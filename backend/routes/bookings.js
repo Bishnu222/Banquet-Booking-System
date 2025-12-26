@@ -22,12 +22,134 @@ const auth = (req, res, next) => {
 // Create Booking
 router.post('/', auth, async (req, res) => {
     try {
-        const { venueId, date, guestCount } = req.body;
+        const { venueId, date, guestCount, eventTime, duration } = req.body;
+
+        if (!date || !eventTime) {
+            return res.status(400).json({ msg: 'Date and Event Time are required' });
+        }
+
+        // 1. Validate Date (Must be future or today)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const bookingDate = new Date(date);
+
+        // Fix timezone offset issue by just comparing year/month/day parts or ensuring UTC integrity, 
+        // but for simplicity in this local app:
+        const bookingDateOnly = new Date(date);
+        bookingDateOnly.setHours(0, 0, 0, 0);
+
+        if (bookingDateOnly < today) {
+            return res.status(400).json({ msg: 'Bookings cannot be made for past dates' });
+        }
+
+        // 2. Calculate Start and End Time
+        // Parse duration (e.g. "5 hours" or "5")
+        let durationHours = 4; // Default
+        if (duration) {
+            const parsed = parseInt(duration);
+            if (!isNaN(parsed) && parsed > 0) {
+                durationHours = parsed;
+            }
+        }
+
+        // Combine date and time strings
+        const startDateTime = new Date(`${date}T${eventTime}`);
+        const endDateTime = new Date(startDateTime.getTime() + durationHours * 60 * 60 * 1000);
+
+        if (isNaN(startDateTime.getTime())) {
+            return res.status(400).json({ msg: 'Invalid Date or Time format' });
+        }
+
+        // 3. Check for Overlaps
+        // Find bookings for this venue where:
+        // (NewStart < ExistingEnd) AND (NewEnd > ExistingStart)
+        // And status is not cancelled
+        // 3. Check for Overlaps
+        // Find bookings for this venue where:
+        // A) Logic for new bookings with time: (NewStart < ExistingEnd) AND (NewEnd > ExistingStart)
+        // B) Logic for legacy bookings (date only): Date matches AND existing.startTime doesn't exist (assume full day block)
+
+        const conflictingBooking = await Booking.findOne({
+            venue: venueId,
+            status: { $ne: 'cancelled' },
+            $or: [
+                // Overlap with time-based bookings
+                {
+                    startTime: { $exists: true }, // Ensure it has time
+                    startTime: { $lt: endDateTime },
+                    endTime: { $gt: startDateTime }
+                },
+                // Overlap with legacy date-only bookings (block the whole day)
+                {
+                    startTime: { $exists: false },
+                    date: {
+                        $gte: new Date(date + 'T00:00:00.000Z'),
+                        $lt: new Date(date + 'T23:59:59.999Z')
+                    }
+                    // Note: Date comparison depends on how 'date' was stored. 
+                    // Assuming 'date' stored as Date object at midnight or some time.
+                    // Doing a simplified check for now assuming 'date' match:
+                }
+            ]
+        });
+
+        // Refined Legacy Check manually to avoid timezone complex mongo queries if needed, 
+        // but let's try a simpler date match if the above is too complex.
+        // Actually, let's keep it simple: matches existing date?
+        // But store 'date' is a Date object.
+        // Let's rely on the previous simple check for time, and ADD a check for legacy.
+
+        const legacyConflict = await Booking.findOne({
+            venue: venueId,
+            status: { $ne: 'cancelled' },
+            startTime: { $exists: false },
+            // Check if dates fall on same day. 
+            // This is hard with exact Date match. 
+            // Let's assume legacy bookings are effectively blocking. 
+        });
+
+        // Simpler approach: Fetch possible conflicts by date range (broad), then filter in JS
+        const potentialConflicts = await Booking.find({
+            venue: venueId,
+            status: { $ne: 'cancelled' },
+            date: {
+                $gte: new Date(new Date(date).setHours(0, 0, 0, 0)),
+                $lt: new Date(new Date(date).setHours(23, 59, 59, 999))
+            }
+        });
+
+        const hasOverlap = potentialConflicts.some(b => {
+            // If legacy (no start/end), it blocks everything on that day
+            if (!b.startTime || !b.endTime) return true;
+
+            // If new (has start/end), check time overlap
+            const existStart = new Date(b.startTime).getTime();
+            const existEnd = new Date(b.endTime).getTime();
+            const newStart = startDateTime.getTime();
+            const newEnd = endDateTime.getTime();
+
+            return (newStart < existEnd && newEnd > existStart);
+        });
+
+        if (hasOverlap) {
+            return res.status(400).json({ msg: 'Venue has been booked already' });
+        }
+
+        // 4. Calculate Total Price
+        const venue = await Venue.findById(venueId);
+        if (!venue) return res.status(404).json({ msg: 'Venue not found' });
+
+        const pricePerGuest = venue.pricePerGuest || 1200;
+        const totalPrice = guestCount * pricePerGuest;
+
         const booking = new Booking({
             user: req.user.id,
             venue: venueId,
-            date,
-            guestCount
+            date: bookingDate, // Keep expected date part
+            startTime: startDateTime,
+            endTime: endDateTime,
+            guestCount,
+            totalPrice
         });
         const newBooking = await booking.save();
         res.json(newBooking);

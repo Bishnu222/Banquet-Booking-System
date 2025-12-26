@@ -35,6 +35,19 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get Featured Venues (Admin added)
+router.get('/featured', async (req, res) => {
+    try {
+        const venues = await Venue.find().populate('owner');
+        const ownerVenues = venues.filter(venue =>
+            venue.owner && venue.owner.role === 'owner'
+        );
+        res.json(ownerVenues);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // Get Venues for Logged in Owner
 router.get('/my-venues', auth, verifyOwner, async (req, res) => {
     try {
@@ -68,6 +81,7 @@ router.post('/', auth, verifyOwner, upload.array('images', 5), async (req, res) 
         description: req.body.description,
         location: req.body.location,
         capacity: req.body.capacity,
+        pricePerGuest: req.body.pricePerGuest,
         priceRange: req.body.priceRange,
         images: finalImages,
         owner: req.user.id
@@ -96,6 +110,7 @@ router.put('/:id', auth, verifyOwner, async (req, res) => {
         venue.description = req.body.description || venue.description;
         venue.location = req.body.location || venue.location;
         venue.capacity = req.body.capacity || venue.capacity;
+        venue.pricePerGuest = req.body.pricePerGuest || venue.pricePerGuest;
         venue.priceRange = req.body.priceRange || venue.priceRange;
         venue.images = req.body.images || venue.images;
 
