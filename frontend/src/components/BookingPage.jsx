@@ -22,6 +22,7 @@ function BookingPage() {
 
     const [error, setError] = useState('');
 
+
     useEffect(() => {
         const fetchVenue = async () => {
             try {
@@ -50,8 +51,7 @@ function BookingPage() {
         }
 
         try {
-            // Note: Backend currently only accepts venueId, date, guestCount. 
-            // We are sending others but they might be ignored by backend unless updated.
+
             await api.post('/bookings', {
                 venueId,
                 date: bookingDate,
@@ -82,18 +82,18 @@ function BookingPage() {
         <div className="booking-page-container">
             {/* Header */}
             <div className="booking-header-nav">
-                <button className="back-btn" onClick={() => navigate(-1)}>
-                    &larr; Back to Venue
-                </button>
                 <div className="header-actions">
                     <span>Book your events</span>
                 </div>
             </div>
 
+
+
             <div className="booking-layout">
                 {/* Left Side: Form */}
                 <div className="booking-form-section">
                     <form onSubmit={handleBooking}>
+                        {error && <div className="booking-error-message">{error}</div>}
                         {/* Event Details Group */}
                         <div className="form-section-group">
                             <h3>Event Details</h3>
@@ -124,6 +124,7 @@ function BookingPage() {
                                     <label>Event Time</label>
                                     <input
                                         type="time"
+                                        required
                                         value={eventTime}
                                         onChange={(e) => setEventTime(e.target.value)}
                                     />
@@ -238,8 +239,8 @@ function BookingPage() {
                     <div className="sidebar-card price-card">
                         <h4>Price Breakdown</h4>
                         <div className="price-row">
-                            <span>Base Price</span>
-                            <span>{venue.priceRange}</span>
+                            <span>Price Per Guest</span>
+                            <span>Rs. {venue.pricePerGuest || 1200}</span>
                         </div>
                         <div className="price-row">
                             <span>Guest Count</span>
@@ -248,9 +249,9 @@ function BookingPage() {
                         <hr />
                         <div className="price-row total">
                             <span>Total Amount</span>
-                            <span>{venue.priceRange}</span>
+                            <span>Rs. {(parseInt(guestCount) || 0) * (venue.pricePerGuest || 1200)}</span>
                         </div>
-                        <p className="price-note">*Final price may vary based on additional services</p>
+                        <p className="price-note">*Final price calculated based on guest count.</p>
                     </div>
 
                     {/* What's Included Card */}

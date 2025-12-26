@@ -16,6 +16,7 @@ function OwnerDashboard() {
         name: '',
         location: '',
         capacity: '',
+        pricePerGuest: '',
         priceRange: '',
         description: '',
         images: [] // Array of File objects
@@ -59,6 +60,22 @@ function OwnerDashboard() {
         setFormData({ ...formData, images: e.target.files });
     };
 
+    const [editingVenueId, setEditingVenueId] = useState(null);
+
+    const handleEdit = (venue) => {
+        setFormData({
+            name: venue.name,
+            location: venue.location,
+            capacity: venue.capacity,
+            pricePerGuest: venue.pricePerGuest,
+            priceRange: venue.priceRange,
+            description: venue.description,
+            images: []
+        });
+        setEditingVenueId(venue._id);
+        setShowAddModal(true);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -66,6 +83,7 @@ function OwnerDashboard() {
             data.append('name', formData.name);
             data.append('location', formData.location);
             data.append('capacity', formData.capacity);
+            data.append('pricePerGuest', formData.pricePerGuest);
             data.append('priceRange', formData.priceRange);
             data.append('description', formData.description);
 
@@ -73,17 +91,24 @@ function OwnerDashboard() {
                 data.append('images', formData.images[i]);
             }
 
-            await api.post('/venues', data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
+            if (editingVenueId) {
+                await api.put(`/venues/${editingVenueId}`, data, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+            } else {
+                await api.post('/venues', data, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+            }
+
             setShowAddModal(false);
+            setEditingVenueId(null);
             fetchMyVenues();
             setFormData({
                 name: '',
                 location: '',
                 capacity: '',
+                pricePerGuest: '',
                 priceRange: '',
                 description: '',
                 images: []
@@ -91,7 +116,7 @@ function OwnerDashboard() {
             setActiveTab('venues');
         } catch (err) {
             console.error(err);
-            alert("Failed to add venue. Please check your inputs.");
+            alert("Failed to save venue. Please check your inputs.");
         }
     };
 
@@ -130,7 +155,7 @@ function OwnerDashboard() {
     const totalCapacity = venues.reduce((acc, v) => acc + (parseInt(v.capacity) || 0), 0);
     // Mock data for things we don't have yet
     const activeBookings = Math.floor(totalVenues * 1.5);
-    const monthlyRevenue = totalVenues * 1500;
+    const monthlyRevenue = totalVenues ;
 
     if (loading) return (
         <div className="loading-screen">
@@ -196,7 +221,18 @@ function OwnerDashboard() {
                     </div>
 
                     {activeTab === 'venues' && (
-                        <button className="btn-primary" onClick={() => setShowAddModal(true)}>
+                        <button className="btn-primary" onClick={() => {
+                            setEditingVenueId(null);
+                            setFormData({
+                                name: '',
+                                location: '',
+                                capacity: '',
+                                priceRange: '',
+                                description: '',
+                                images: []
+                            });
+                            setShowAddModal(true);
+                        }}>
                             + Add New Venue
                         </button>
                     )}
@@ -223,7 +259,7 @@ function OwnerDashboard() {
                             <div className="stat-card">
                                 <div className="stat-info">
                                     <h3>Est. Revenue</h3>
-                                    <p className="stat-value">${monthlyRevenue}</p>
+                                    <p className="stat-value">Rs. {monthlyRevenue}</p>
                                 </div>
                                 <div className="stat-icon">💰</div>
                             </div>
@@ -233,7 +269,7 @@ function OwnerDashboard() {
                             <h2>Recent Venues</h2>
                             <div className="venues-grid">
                                 {venues.slice(0, 3).map(venue => (
-                                    <VenueCard key={venue._id} venue={venue} onDelete={handleDelete} />
+                                    <VenueCard key={venue._id} venue={venue} onDelete={handleDelete} onEdit={handleEdit} />
                                 ))}
                                 {venues.length === 0 && <p className="no-data">No venues listed yet.</p>}
                             </div>
@@ -245,7 +281,7 @@ function OwnerDashboard() {
                 {activeTab === 'venues' && (
                     <div className="venues-grid">
                         {venues.map(venue => (
-                            <VenueCard key={venue._id} venue={venue} onDelete={handleDelete} />
+                            <VenueCard key={venue._id} venue={venue} onDelete={handleDelete} onEdit={handleEdit} />
                         ))}
                         {venues.length === 0 && (
                             <div className="empty-state">
@@ -305,27 +341,31 @@ function OwnerDashboard() {
                 showAddModal && (
                     <div className="modal-overlay">
                         <div className="modal">
-                            <h2>Add New Venue</h2>
+                            <h2>{editingVenueId ? 'Update Venue' : 'Add New Venue'}</h2>
                             <form onSubmit={handleSubmit}>
                                 <div className="form-grid">
                                     <div className="form-group">
                                         <label>Venue Name</label>
-                                        <input name="name" value={formData.name} onChange={handleInputChange} required placeholder="e.g. Grand Ballroom" />
+                                        <input name="name" value={formData.name} onChange={handleInputChange} required placeholder />
                                     </div>
                                     <div className="form-group">
                                         <label>Location</label>
-                                        <input name="location" value={formData.location} onChange={handleInputChange} required placeholder="City, Area" />
+                                        <input name="location" value={formData.location} onChange={handleInputChange} required placeholder />
                                     </div>
                                 </div>
 
                                 <div className="form-grid">
                                     <div className="form-group">
                                         <label>Capacity (Guests)</label>
-                                        <input name="capacity" type="number" value={formData.capacity} onChange={handleInputChange} required placeholder="e.g. 500" />
+                                        <input name="capacity" type="number" value={formData.capacity} onChange={handleInputChange} required placeholder />
                                     </div>
                                     <div className="form-group">
-                                        <label>Price Range</label>
-                                        <input name="priceRange" value={formData.priceRange} onChange={handleInputChange} required placeholder="e.g. $1000 - $5000" />
+                                        <label>Price Range (Display only)</label>
+                                        <input name="priceRange" value={formData.priceRange} onChange={handleInputChange} required placeholder />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Price Per Guest (Calculations)</label>
+                                        <input name="pricePerGuest" type="number" value={formData.pricePerGuest} onChange={handleInputChange} />
                                     </div>
                                 </div>
 
@@ -348,7 +388,7 @@ function OwnerDashboard() {
 
                                 <div className="modal-actions">
                                     <button type="button" className="btn-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
-                                    <button type="submit" className="btn-primary">Publish Venue</button>
+                                    <button type="submit" className="btn-primary">{editingVenueId ? 'Update Venue' : 'Publish Venue'}</button>
                                 </div>
                             </form>
                         </div>
@@ -360,7 +400,7 @@ function OwnerDashboard() {
 }
 
 // Sub-component for clean code
-function VenueCard({ venue, onDelete }) {
+function VenueCard({ venue, onDelete, onEdit }) {
     return (
         <div className="venue-card">
             <img
@@ -387,6 +427,9 @@ function VenueCard({ venue, onDelete }) {
                 </div>
             </div>
             <div className="card-actions">
+                <button className="btn-icon edit" onClick={() => onEdit(venue)} style={{ marginRight: '10px', color: '#007bff' }}>
+                    ✏️ Update
+                </button>
                 <button className="btn-icon delete" onClick={() => onDelete(venue._id)}>
                     🗑️ Remove
                 </button>

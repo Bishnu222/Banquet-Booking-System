@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./Auth.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../api";
 
 function SignIn() {
   const navigate = useNavigate();
+  const location = useLocation();
   // Removed activeTab state as this is now purely User login
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +26,11 @@ function SignIn() {
       // For now, we just redirect based on actual role
       if (res.data.user.role === 'admin') navigate('/admin-dashboard');
       else if (res.data.user.role === 'owner') navigate('/owner-dashboard');
-      else navigate('/home'); // Redirect to User Dashboard
+      else {
+        const from = location.state?.from || '/home';
+        navigate(from, { replace: true });
+      }
+
 
     } catch (err) {
       console.error(err);

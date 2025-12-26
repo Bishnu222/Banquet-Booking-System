@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./OwnerAuth.css"; // Import the new dedicated CSS
+import "./OwnerAuth.css"; 
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api";
 
@@ -39,11 +39,10 @@ function OwnerLogin() {
 
     return (
         <div className="owner-auth-container">
-            {/* Form Side (Left for owners, distinct from User login) */}
             <div className="owner-auth-form-side">
                 <div className="owner-auth-card">
                     <div className="owner-auth-header">
-                        {/* Auth Switch Buttons */}
+                        
                         <div className="auth-switch-container" style={{ display: 'flex', gap: '10px', marginBottom: '20px', padding: '5px', background: '#f8fafc', borderRadius: '8px', width: 'fit-content', border: '1px solid #e2e8f0', margin: '0 auto 1.5rem auto' }}>
                             <button
                                 className="auth-switch-btn"
@@ -61,7 +60,7 @@ function OwnerLogin() {
                             </button>
                         </div>
 
-                        <h2 className="owner-auth-welcome">Banquet Ownwer Login</h2>
+                        <h2 className="owner-auth-welcome">Banquet Owner Login</h2>
                         <p className="owner-auth-subtitle">
                             Access your business dashboard
                         </p>
@@ -117,7 +116,7 @@ function OwnerLogin() {
                 </div>
             </div>
 
-            {/* Brand Side (Right for owners) */}
+            
             <div className="owner-auth-brand-side">
                 <div className="owner-auth-brand-content">
                     <h1 className="owner-auth-title">Banquet Owner</h1>

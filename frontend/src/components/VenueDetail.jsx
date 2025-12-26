@@ -33,7 +33,27 @@ function VenueDetail() {
         return `http://localhost:5000${imagePath}`;
     };
 
+    const formatPrice = (range) => {
+        if (!range) return '';
+        const parts = range.toString().split('-');
+        if (parts.length === 2) {
+            const min = parseFloat(parts[0]);
+            const max = parseFloat(parts[1]);
+            if (!isNaN(min) && !isNaN(max)) {
+                return `Rs. ${min.toLocaleString()} - Rs. ${max.toLocaleString()}`;
+            }
+        }
+        const val = parseFloat(range);
+        if (!isNaN(val)) return `Rs. ${val.toLocaleString()}`;
+        return range;
+    };
+
     const handleBookClick = () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/signin', { state: { from: `/book/${id}` } });
+            return;
+        }
         navigate(`/book/${id}`);
     };
 
@@ -42,36 +62,60 @@ function VenueDetail() {
 
     return (
         <div className="venue-detail-container">
-            {/* Back Button */}
-            <button onClick={() => navigate(-1)} className="back-btn-simple">
-                &larr;
-            </button>
-
-            {/* 1. Image Grid Section */}
             <section className="venue-images-grid">
                 <div className="main-image-frame">
                     <ImageWithFallback
-                        src={getImageUrl(venue.images?.[0])}
+                        src={getImageUrl(venue.images?.[activeImageIndex])}
                         alt={venue.name}
                         className="grid-main-img"
                     />
                 </div>
                 <div className="side-images-col">
-                    {[1, 2, 3].map((offset) => (
-                        <div key={offset} className="side-image-frame">
-                            <ImageWithFallback
-                                src={getImageUrl(venue.images?.[offset])}
-                                alt={`Venue scan ${offset}`}
-                                className="grid-side-img"
-                            />
-                        </div>
-                    ))}
+                    {venue.images?.map((img, index) => {
+                        if (index > 3) return null;
+
+                        return (
+                            <div
+                                key={index}
+                                className={`side-image-frame ${activeImageIndex === index ? 'active-thumb' : ''}`}
+                                onClick={() => setActiveImageIndex(index)}
+                            >
+                                <ImageWithFallback
+                                    src={getImageUrl(img)}
+                                    alt={`Venue scan ${index}`}
+                                    className="grid-side-img"
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             </section>
+            <div className="venue-info-bar section-spacing">
+                <div className="info-bar-item">
+                    <span className="info-icon">👥</span>
+                    <div>
+                        <span className="info-label">Capacity</span>
+                        <span className="info-val">{venue.capacity} guests</span>
+                    </div>
+                </div>
+                <div className="info-bar-item">
+                    <span className="info-icon">💵</span>
+                    <div>
+                        <span className="info-label">Price Per Guest</span>
+                        <span className="info-val">Rs. {venue.pricePerGuest || 1200}</span>
+                    </div>
+                </div>
+                <div className="info-bar-item">
+                    <span className="info-icon">📍</span>
+                    <div>
+                        <span className="info-label">Address</span>
+                        <span className="info-val">{venue.location}</span>
+                    </div>
+                </div>
+            </div>
 
-            {/* 2. Content & Booking Section */}
             <div className="venue-content-wrapper">
-                {/* Left Column: Details */}
+
                 <div className="venue-left-details">
                     <h1 className="venue-title-large">{venue.name}</h1>
                     <div className="venue-location-row">
@@ -83,38 +127,13 @@ function VenueDetail() {
                         {venue.description}
                     </p>
 
-                    {/* Info Bar (Capacity, Price, Address) */}
-                    <div className="venue-info-bar">
-                        <div className="info-bar-item">
-                            <span className="info-icon">👥</span>
-                            <div>
-                                <span className="info-label">Capacity</span>
-                                <span className="info-val">{venue.capacity} guests</span>
-                            </div>
-                        </div>
-                        <div className="info-bar-item">
-                            <span className="info-icon">💵</span>
-                            <div>
-                                <span className="info-label">Price Range</span>
-                                <span className="info-val">{venue.priceRange}</span>
-                            </div>
-                        </div>
-                        <div className="info-bar-item">
-                            <span className="info-icon">📍</span>
-                            <div>
-                                <span className="info-label">Address</span>
-                                <span className="info-val">{venue.location}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                {/* Right Column: Booking Card */}
+                </div>
                 <div className="venue-booking-sidebar">
                     <div className="booking-card">
                         <h3>Book this venue</h3>
                         <p className="price-start">Starting from</p>
-                        <h2 className="price-highlight">{venue.priceRange || 'Contact for Price'}</h2>
+                        <h2 className="price-highlight">Rs. {venue.pricePerGuest || 1200} <span style={{ fontSize: '16px', fontWeight: '400', color: '#666' }}>/ guest</span></h2>
 
                         <button className="book-now-btn" onClick={handleBookClick}>
                             Book Now

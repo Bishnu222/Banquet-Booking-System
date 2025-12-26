@@ -8,6 +8,19 @@ function AdminDashboard() {
     const [users, setUsers] = useState([]);
     const [venues, setVenues] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [editingVenueId, setEditingVenueId] = useState(null);
+
+    // Form State
+    const [formData, setFormData] = useState({
+        name: '',
+        location: '',
+        capacity: '',
+        pricePerGuest: '',
+        priceRange: '',
+        description: '',
+        images: []
+    });
 
     useEffect(() => {
         if (activeTab === 'users') fetchUsers();
@@ -29,12 +42,63 @@ function AdminDashboard() {
     const fetchVenues = async () => {
         try {
             setLoading(true);
-            const res = await api.get('/venues'); 
+            const res = await api.get('/venues');
             setVenues(res.data);
             setLoading(false);
         } catch (err) {
             console.error(err);
             setLoading(false);
+        }
+    };
+
+    const handleInputChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleImageChange = (e) => {
+        setFormData({ ...formData, images: e.target.files });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const data = new FormData();
+            data.append('name', formData.name);
+            data.append('location', formData.location);
+            data.append('capacity', formData.capacity);
+            data.append('pricePerGuest', formData.pricePerGuest);
+            data.append('priceRange', formData.priceRange);
+            data.append('description', formData.description);
+
+            for (let i = 0; i < formData.images.length; i++) {
+                data.append('images', formData.images[i]);
+            }
+
+            if (editingVenueId) {
+                await api.put(`/venues/${editingVenueId}`, data, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+            } else {
+                await api.post('/venues', data, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+            }
+
+            setShowAddModal(false);
+            setEditingVenueId(null);
+            fetchVenues();
+            setFormData({
+                name: '',
+                location: '',
+                capacity: '',
+                pricePerGuest: '',
+                priceRange: '',
+                description: '',
+                images: []
+            });
+        } catch (err) {
+            console.error(err);
+            alert("Failed to save venue. Please check your inputs.");
         }
     };
 
@@ -74,34 +138,63 @@ function AdminDashboard() {
             </header>
 
             {/* Tabs */}
-            <div style={{ marginBottom: '20px' }}>
-                <button
-                    onClick={() => setActiveTab('users')}
-                    style={{
-                        padding: '10px 20px',
-                        marginRight: '10px',
-                        border: 'none',
-                        background: activeTab === 'users' ? '#333' : '#eee',
-                        color: activeTab === 'users' ? 'white' : '#333',
-                        borderRadius: '5px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Manage Users
-                </button>
-                <button
-                    onClick={() => setActiveTab('venues')}
-                    style={{
-                        padding: '10px 20px',
-                        border: 'none',
-                        background: activeTab === 'venues' ? '#333' : '#eee',
-                        color: activeTab === 'venues' ? 'white' : '#333',
-                        borderRadius: '5px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Manage Venues
-                </button>
+            <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between' }}>
+                <div>
+                    <button
+                        onClick={() => setActiveTab('users')}
+                        style={{
+                            padding: '10px 20px',
+                            marginRight: '10px',
+                            border: 'none',
+                            background: activeTab === 'users' ? '#333' : '#eee',
+                            color: activeTab === 'users' ? 'white' : '#333',
+                            borderRadius: '5px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Manage Users
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('venues')}
+                        style={{
+                            padding: '10px 20px',
+                            border: 'none',
+                            background: activeTab === 'venues' ? '#333' : '#eee',
+                            color: activeTab === 'venues' ? 'white' : '#333',
+                            borderRadius: '5px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Manage Venues
+                    </button>
+                </div>
+                {activeTab === 'venues' && (
+                    <button
+                        onClick={() => {
+                            setEditingVenueId(null);
+                            setFormData({
+                                name: '',
+                                location: '',
+                                capacity: '',
+                                pricePerGuest: '',
+                                priceRange: '',
+                                description: '',
+                                images: []
+                            });
+                            setShowAddModal(true);
+                        }}
+                        style={{
+                            padding: '10px 20px',
+                            border: 'none',
+                            background: '#2cb57e',
+                            color: 'white',
+                            borderRadius: '5px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        + Add Venue
+                    </button>
+                )}
             </div>
 
             {activeTab === 'users' ? (
@@ -182,6 +275,55 @@ function AdminDashboard() {
                         </tbody>
                     </table>
                 </>
+            )}
+            {showAddModal && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000
+                }}>
+                    <div style={{
+                        background: 'white', padding: '2rem', borderRadius: '8px', width: '100%', maxWidth: '600px',
+                        maxHeight: '90vh', overflowY: 'auto'
+                    }}>
+                        <h2 style={{ marginTop: 0 }}>{editingVenueId ? 'Update Venue' : 'Add New Venue'}</h2>
+                        <form onSubmit={handleSubmit}>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '5px' }}>Venue Name</label>
+                                <input name="name" value={formData.name} onChange={handleInputChange} required style={{ width: '100%', padding: '8px' }} />
+                            </div>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '5px' }}>Location</label>
+                                <input name="location" value={formData.location} onChange={handleInputChange} required style={{ width: '100%', padding: '8px' }} />
+                            </div>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '5px' }}>Capacity</label>
+                                <input name="capacity" type="number" value={formData.capacity} onChange={handleInputChange} required style={{ width: '100%', padding: '8px' }} />
+                            </div>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '5px' }}>Price Range</label>
+                                <input name="priceRange" value={formData.priceRange} onChange={handleInputChange} required style={{ width: '100%', padding: '8px' }} placeholder="e.g. 50k - 1 Lakh" />
+                            </div>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '5px' }}>Price Per Guest</label>
+                                <input name="pricePerGuest" type="number" value={formData.pricePerGuest} onChange={handleInputChange} style={{ width: '100%', padding: '8px' }} />
+                            </div>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '5px' }}>Description</label>
+                                <textarea name="description" value={formData.description} onChange={handleInputChange} required rows="4" style={{ width: '100%', padding: '8px' }} />
+                            </div>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', marginBottom: '5px' }}>Images</label>
+                                <input type="file" multiple accept="image/*" onChange={handleImageChange} style={{ display: 'block' }} />
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                                <button type="button" onClick={() => setShowAddModal(false)} style={{ padding: '8px 16px', background: '#ccc', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
+                                <button type="submit" style={{ padding: '8px 16px', background: '#333', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                                    {editingVenueId ? 'Update' : 'Add Venue'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             )}
         </div>
     );

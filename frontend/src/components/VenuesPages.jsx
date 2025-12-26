@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ImageWithFallback } from "../image/ImageWithFallback";
 import "./VenuesPages.css";
 import api from "../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export function VenuesPage({ onNavigateBack }) {
   const navigate = useNavigate();
@@ -25,22 +25,24 @@ export function VenuesPage({ onNavigateBack }) {
     fetchVenues();
   }, []);
 
-  const handleBookVenue = async (venueId) => {
+  const handleBookVenue = (venueId) => {
     const token = localStorage.getItem('token');
     if (!token) {
-      if (window.confirm("You need to sign in to book a venue. Go to Sign In?")) {
-        navigate('/signin');
-      }
+      navigate('/signin', { state: { from: `/book/${venueId}` } });
       return;
     }
+    navigate(`/book/${venueId}`);
+  };
 
-    try {
-      await api.post('/bookings', { venueId });
-      alert("Booking request sent successfully!");
-    } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.msg || "Booking failed");
-    }
+  const handleViewDetails = (venueId) => {
+
+    navigate(`/venues/${venueId}`);
+  };
+
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return 'https://via.placeholder.com/400x300?text=No+Image';
+    if (imagePath.startsWith('http')) return imagePath;
+    return `http://localhost:5000${imagePath}`;
   };
 
   const eventTypes = ["All", "Wedding", "Corporate Event"];
@@ -50,18 +52,7 @@ export function VenuesPage({ onNavigateBack }) {
 
   return (
     <div className="venues-page">
-      {/* Navigation */}
-      <nav className="venues-nav">
-        <button onClick={onNavigateBack} className="back-button">
-          {/* Simple Left Arrow */}
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          <span>Back to Home</span>
-        </button>
-      </nav>
 
-      {/* Hero Section */}
       <section className="venues-hero">
         <h1 className="hero-title">Explore Our Venues</h1>
         <p className="hero-text">
@@ -69,7 +60,7 @@ export function VenuesPage({ onNavigateBack }) {
         </p>
       </section>
 
-      {/* Filters Section */}
+
       <section className="filters-section">
         <div className="filters-container">
           <div className="filter-group">
@@ -87,21 +78,21 @@ export function VenuesPage({ onNavigateBack }) {
         </div>
       </section>
 
-      {/* Venues Grid */}
+
       <section className="venues-grid-section">
         <div className="venues-grid">
           {venues.map(venue => (
             <div key={venue._id} className="venue-card">
               <div className="venue-image-container">
                 <ImageWithFallback
-                  src={venue.images?.[0] || 'https://via.placeholder.com/400x300?text=No+Image'}
+                  src={getImageUrl(venue.images?.[0])}
                   alt={venue.name}
                 />
               </div>
               <div className="venue-content">
                 <h3 className="venue-name">{venue.name}</h3>
                 <div className="venue-location">
-                  {/* Location Pin Icon */}
+
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
@@ -113,7 +104,7 @@ export function VenuesPage({ onNavigateBack }) {
 
                 <div className="venue-stats-row">
                   <div className="stat-item">
-                    {/* People/Guests Icon */}
+
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                       <circle cx="9" cy="7" r="4"></circle>
@@ -123,7 +114,7 @@ export function VenuesPage({ onNavigateBack }) {
                     <span>{venue.capacity}</span>
                   </div>
                   <div className="stat-item">
-                    {/* Calendar/Event/Price Icon */}
+
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                       <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -138,7 +129,7 @@ export function VenuesPage({ onNavigateBack }) {
                   <button className="btn-book" onClick={() => handleBookVenue(venue._id)}>
                     Book Now
                   </button>
-                  <button className="btn-details" onClick={() => navigate(`/venues/${venue._id}`)}>
+                  <button className="btn-details" onClick={() => handleViewDetails(venue._id)}>
                     View Details
                   </button>
                 </div>
@@ -147,33 +138,47 @@ export function VenuesPage({ onNavigateBack }) {
           ))}
         </div>
       </section>
-      {/* Footer */}
-      <footer className="venues-footer">
-        <div className="footer-container">
-          <div className="footer-col">
-            <h4>Banquet Booking</h4>
-            <p className="footer-text">
-              Your trusted partner for memorable events and celebrations
-            </p>
+
+      <footer className="landing-footer">
+        <div className="section-container">
+          <div className="footer-grid">
+            <div className="footer-column brand-column">
+              <h4 className="footer-title">Banquet Booking</h4>
+              <p className="footer-text">
+                Your trusted partner for memorable events. We connect you with the best venues to make your celebration extraordinary.
+              </p>
+            </div>
+
+            <div className="footer-column">
+              <h5 className="footer-heading">Services</h5>
+              <ul className="footer-links">
+                <li>
+                  <button className="footer-link-btn" onClick={() => navigate('/venues')}>
+                    Wedding Venues
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            <div className="footer-column">
+              <h5 className="footer-heading">Company</h5>
+              <ul className="footer-links">
+                <li><button className="footer-link-btn" onClick={() => navigate('/about')}>About Us</button></li>
+                <li><button className="footer-link-btn" onClick={() => navigate('/terms')}>Terms & Conditions</button></li>
+              </ul>
+            </div>
+
+            <div className="footer-column">
+              <h5 className="footer-heading">Contact</h5>
+              <ul className="footer-links">
+                <li><a href="mailto:support@banquetbooking.com">support@banquetbooking.com</a></li>
+                <li><a href="tel:+9771234567890">+977 1234567890</a></li>
+                <li><span>Kathmandu, Nepal</span></li>
+              </ul>
+            </div>
           </div>
-          <div className="footer-col">
-            <h5>Service</h5>
-            <ul className="footer-links">
-              <li><a href="#">Wedding Venues</a></li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h5>Company</h5>
-            <ul className="footer-links">
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Contact</a></li>
-            </ul>
-          </div>
-          <div className="footer-col">
-            <h5>Legal</h5>
-            <ul className="footer-links">
-              <li><a href="#">Terms of Service</a></li>
-            </ul>
+          <div className="footer-bottom">
+            <p>&copy; 2025 Banquet Booking System. All rights reserved.</p>
           </div>
         </div>
       </footer>

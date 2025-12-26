@@ -84,9 +84,6 @@ function MyBookings() {
     return (
         <div className="my-bookings-page">
             <nav className="bookings-nav">
-                <button onClick={() => navigate('/home')} className="back-btn-simple">
-                    &larr; Back to Home
-                </button>
                 <h1>My Bookings</h1>
             </nav>
 
