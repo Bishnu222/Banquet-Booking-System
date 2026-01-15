@@ -1,0 +1,52 @@
+﻿node : file:///C:/Use
+rs/Hp/Desktop/Banquet
+s%20booking%20system/
+backend/routes/admin/
+payments.js:4
+At line:1 char:1
++ node 
+--trace-warnings 
+server.js 2>&1 | 
+Out-File -FilePath 
+server_trac ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (file://   
+ /C:/User...n/pay    
+ments.js:4:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+import adminAuth 
+from '../../middlewar
+e/admin/auth.js';
+       ^^^^^^^^^
+SyntaxError: The 
+requested module '../
+../middleware/admin/a
+uth.js' does not 
+provide an export 
+named 'default'
+    at ModuleJob._ins
+tantiate (node:intern
+al/modules/esm/module
+_job:134:21)
+    at async 
+ModuleJob.run (node:i
+nternal/modules/esm/m
+odule_job:217:5)
+    at async 
+ModuleLoader.import (
+node:internal/modules
+/esm/loader:316:24)
+    at async asyncRun
+EntryPointWithESMLoad
+er (node:internal/mod
+ules/run_main:123:5)
+
+Node.js v20.14.0

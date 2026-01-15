@@ -11,6 +11,11 @@ const BookingSchema = new mongoose.Schema({
         ref: 'Venue',
         required: true
     },
+    contact: {
+        fullName: String,
+        email: String,
+        phone: String
+    },
     status: {
         type: String,
         enum: ['pending', 'confirmed', 'cancelled'],
@@ -23,6 +28,10 @@ const BookingSchema = new mongoose.Schema({
     startTime: {
         type: Date
     },
+    eventType: {
+        type: String,
+        default: 'Wedding'
+    },
     endTime: {
         type: Date
     },
@@ -33,6 +42,18 @@ const BookingSchema = new mongoose.Schema({
     totalPrice: {
         type: Number,
         required: true
+    },
+    selectedPackage: {
+        name: String,
+        price: Number
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['pending', 'paid', 'failed'],
+        default: 'pending'
+    },
+    transactionId: {
+        type: String
     },
     createdAt: {
         type: Date,

@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Venue from './models/Venue.js';
-import User from './models/User.js';
+import User from './models/user/User.js';
 
 dotenv.config();
 
