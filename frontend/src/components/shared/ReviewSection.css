@@ -1,0 +1,135 @@
+.reviews-section {
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid #eee;
+}
+
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.reviews-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+.review-form-card {
+    background: #f9f9f9;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+}
+
+.review-form-card h4 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.rating-input {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.star-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #ddd;
+    padding: 0;
+    transition: transform 0.2s;
+}
+
+.star-btn.active {
+    color: #ffc107;
+}
+
+.star-btn:hover {
+    transform: scale(1.1);
+}
+
+.comment-input {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.submit-review-btn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-review-btn:hover {
+    background: #e60000;
+}
+
+.submit-review-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.review-item {
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 25px;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.reviewer-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.review-date {
+    font-size: 14px;
+    color: #888;
+}
+
+.review-stars {
+    color: #ffc107;
+    margin-bottom: 10px;
+}
+
+.review-comment {
+    color: #555;
+    line-height: 1.6;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    background: #f9f9f9;
+    border-radius: 12px;
+}

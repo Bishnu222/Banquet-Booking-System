@@ -1,0 +1,38 @@
+.owner-mode {
+    --auth-primary: #1e293b;
+    --auth-accent: #38bdf8;
+}
+
+.owner-mode .signin-brand-title {
+    color: var(--auth-accent);
+}
+
+.owner-mode .signin-button {
+    background: var(--auth-primary);
+    border: none;
+    color: white;
+}
+
+.owner-mode .signin-button:hover {
+    background: #334155;
+}
+
+.owner-mode .auth-switch-btn.active {
+    background: var(--auth-primary) !important;
+}
+
+.owner-mode .signup-link {
+    color: var(--auth-accent);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
